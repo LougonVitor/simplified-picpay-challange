@@ -8,8 +8,5 @@ public class SimplifiedPicpayChallangeApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SimplifiedPicpayChallangeApplication.class, args);
-
-		System.out.println("Test");
 	}
-
 }
