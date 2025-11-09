@@ -1,5 +1,6 @@
 package br.com.simplifiedpicpay.transaction.services;
 
+import br.com.simplifiedpicpay.notification.services.NotificationService;
 import br.com.simplifiedpicpay.transaction.domain.model.Transaction;
 import br.com.simplifiedpicpay.transaction.dto.request.TransactionRequestDto;
 import br.com.simplifiedpicpay.transaction.repositories.TransactionRepository;
@@ -26,6 +27,9 @@ public class TransactionService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private NotificationService notificationService;
+
     public void createTransaction(TransactionRequestDto transactionDto) throws Exception{
         User sender = this.userService.findUserById(transactionDto.senderId());
         User receiver = this.userService.findUserById(transactionDto.receiverId());
@@ -49,6 +53,9 @@ public class TransactionService {
         this.repository.save(newTransaction);
         this.userService.saveUser(sender);
         this.userService.saveUser(receiver);
+
+        this.notificationService.sendNotification(sender.getEmail(), "Transaction realized");
+        this.notificationService.sendNotification(receiver.getEmail(), "Transaction realized");
     }
 
     public boolean authorizeTransaction(User sender, BigDecimal value) {
