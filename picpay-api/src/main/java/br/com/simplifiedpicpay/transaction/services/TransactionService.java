@@ -3,9 +3,12 @@ package br.com.simplifiedpicpay.transaction.services;
 import br.com.simplifiedpicpay.notification.services.NotificationService;
 import br.com.simplifiedpicpay.transaction.domain.model.Transaction;
 import br.com.simplifiedpicpay.transaction.dto.request.TransactionRequestDto;
+import br.com.simplifiedpicpay.transaction.dto.response.TransactionResponseDto;
+import br.com.simplifiedpicpay.transaction.mapper.TransactionMapper;
 import br.com.simplifiedpicpay.transaction.repositories.TransactionRepository;
 import br.com.simplifiedpicpay.user.domain.model.User;
 import br.com.simplifiedpicpay.user.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,9 +33,9 @@ public class TransactionService {
     @Autowired
     private NotificationService notificationService;
 
-    public void createTransaction(TransactionRequestDto transactionDto) throws Exception{
-        User sender = this.userService.findUserById(transactionDto.sender().getId());
-        User receiver = this.userService.findUserById(transactionDto.receiver().getId());
+    public TransactionResponseDto createTransaction(TransactionRequestDto transactionDto) throws Exception{
+        User sender = this.userService.findUserById(transactionDto.senderId());
+        User receiver = this.userService.findUserById(transactionDto.receiverId());
 
         this.userService.validateTransaction(sender, transactionDto.amount());
 
@@ -56,14 +59,17 @@ public class TransactionService {
 
         this.notificationService.sendNotification(sender.getEmail(), "Transaction realized");
         this.notificationService.sendNotification(receiver.getEmail(), "Transaction realized");
+
+        return TransactionMapper.toDto(newTransaction);
     }
 
     public boolean authorizeTransaction(User sender, BigDecimal value) {
-        ResponseEntity<Map> authorizationResponse = restTemplate.getForEntity("https://util.devi.tools/api/v2/authorize ", Map.class);
+        ResponseEntity<Map> authorizationResponse = restTemplate.getForEntity("https://util.devi.tools/api/v2/authorize", Map.class);
 
-        if(authorizationResponse.getStatusCode() == HttpStatus.OK) {
-            String message = (String) authorizationResponse.getBody().get("message");
-            return "Autorizado".equalsIgnoreCase(message);
-        }else return false;
+        //Not necessary
+        //String message = (String) authorizationResponse.getBody().get("status");
+        //return "success".equalsIgnoreCase(message);
+
+        return authorizationResponse.getStatusCode() == HttpStatus.OK;
     }
 }
