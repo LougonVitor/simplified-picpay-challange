@@ -9,6 +9,8 @@ import br.com.simplifiedpicpay.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.math.BigDecimal;
 
 @Service
@@ -31,6 +33,17 @@ public class UserService {
     public UserResponseDto createUser(UserRequestDto userDto) {
         User newUser = this.repository.save(UserMapper.toEntity(userDto));
         return UserMapper.toResponseDto(newUser);
+    }
+
+    public List<UserResponseDto> getAllUsers() {
+        List<User> usersDb = this.repository.findAll();
+        List<UserResponseDto> response = new ArrayList<>();
+
+        for(User entity: usersDb) {
+            response.add(UserMapper.toResponseDto(entity));
+        }
+
+        return response;
     }
 
     public void saveUser(User user) {
