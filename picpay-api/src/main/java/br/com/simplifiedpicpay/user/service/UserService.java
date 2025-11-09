@@ -3,6 +3,7 @@ package br.com.simplifiedpicpay.user.service;
 import br.com.simplifiedpicpay.user.domain.model.User;
 import br.com.simplifiedpicpay.user.domain.model.UserType;
 import br.com.simplifiedpicpay.user.dto.request.UserRequestDto;
+import br.com.simplifiedpicpay.user.dto.response.UserResponseDto;
 import br.com.simplifiedpicpay.user.mapper.UserMapper;
 import br.com.simplifiedpicpay.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,9 @@ public class UserService {
         return this.repository.findUserById(id).orElseThrow(() -> new Exception("User not found by id."));
     }
 
-    public User createUser(UserRequestDto userDto) {
-        return this.repository.save(UserMapper.toEntity(userDto));
+    public UserResponseDto createUser(UserRequestDto userDto) {
+        User newUser = this.repository.save(UserMapper.toEntity(userDto));
+        return UserMapper.toResponseDto(newUser);
     }
 
     public void saveUser(User user) {
