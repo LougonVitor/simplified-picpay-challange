@@ -14,14 +14,18 @@ public class NotificationService {
     private RestTemplate restTemplate;
 
     public void sendNotification(String email, String message) throws Exception {
-        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(email, message);
-
-        ResponseEntity<String> apiResponse = this.restTemplate.postForEntity("https://util.devi.tools/api/v1/notify", notificationRequestDto, String.class);
-
-        boolean isNotified = (apiResponse.getStatusCode() == HttpStatus.OK);
-        if(!isNotified) {
-            System.out.println("Error when sending notification");
-            throw new Exception("Notification service is down.");
-        }
+//        THE LOGIC WAS DISCUSSED BECAUSE THE API PROVIDED IN THE CHALLENGE IS NO LONGER WORKING!!!
+//
+//
+//        NotificationRequestDto notificationRequestDto = new NotificationRequestDto(email, message);
+//
+//        ResponseEntity<String> apiResponse = this.restTemplate.postForEntity("https://util.devi.tools/api/v1/notify", notificationRequestDto, String.class);
+//
+//        boolean isNotified = (apiResponse.getStatusCode() == HttpStatus.OK);
+//        if(!isNotified) {
+//            System.out.println("Error when sending notification");
+//            throw new Exception("Notification service is down.");
+//        }
+        System.out.println("Completed!");
     }
 }
