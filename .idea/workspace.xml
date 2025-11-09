@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aeaabf1c-12f7-4ea6-932d-2a5afbb4d483" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picpay-api/src/main/java/br/com/simplifiedpicpay/user/domain/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/picpay-api/src/main/java/br/com/simplifiedpicpay/user/domain/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/picpay-api/src/main/java/br/com/simplifiedpicpay/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/picpay-api/src/main/java/br/com/simplifiedpicpay/user/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,18 +16,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "LougonVitor"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;LougonVitor&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/LougonVitor/simplified-picpay-challange.git",
-    "accountId": "869b6d76-f324-4809-8c1b-2c49a94c94d1"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/LougonVitor/simplified-picpay-challange.git&quot;,
+    &quot;accountId&quot;: &quot;869b6d76-f324-4809-8c1b-2c49a94c94d1&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
