@@ -31,8 +31,8 @@ public class TransactionService {
     private NotificationService notificationService;
 
     public void createTransaction(TransactionRequestDto transactionDto) throws Exception{
-        User sender = this.userService.findUserById(transactionDto.senderId());
-        User receiver = this.userService.findUserById(transactionDto.receiverId());
+        User sender = this.userService.findUserById(transactionDto.sender().getId());
+        User receiver = this.userService.findUserById(transactionDto.receiver().getId());
 
         this.userService.validateTransaction(sender, transactionDto.amount());
 
