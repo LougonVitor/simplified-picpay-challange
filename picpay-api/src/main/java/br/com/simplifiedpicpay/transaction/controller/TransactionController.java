@@ -1,9 +1,9 @@
 package br.com.simplifiedpicpay.transaction.controller;
 
-import br.com.simplifiedpicpay.transaction.domain.model.Transaction;
 import br.com.simplifiedpicpay.transaction.dto.request.TransactionRequestDto;
 import br.com.simplifiedpicpay.transaction.dto.response.TransactionResponseDto;
 import br.com.simplifiedpicpay.transaction.services.TransactionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<TransactionResponseDto> createTransaction (@RequestBody TransactionRequestDto request) throws Exception{
+    public ResponseEntity<TransactionResponseDto> createTransaction (@RequestBody @Valid TransactionRequestDto request) throws Exception{
         TransactionResponseDto response = this.transactionService.createTransaction(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

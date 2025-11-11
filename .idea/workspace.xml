@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aeaabf1c-12f7-4ea6-932d-2a5afbb4d483" name="Changes" comment="" />
+    <list default="true" id="aeaabf1c-12f7-4ea6-932d-2a5afbb4d483" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/picpay-api/src/main/java/br/com/simplifiedpicpay/advice/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/picpay-api/src/main/java/br/com/simplifiedpicpay/advice/GlobalExceptionHandler.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
