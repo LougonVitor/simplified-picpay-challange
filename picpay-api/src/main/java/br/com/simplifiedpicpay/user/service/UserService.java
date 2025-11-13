@@ -4,6 +4,7 @@ import br.com.simplifiedpicpay.user.domain.model.User;
 import br.com.simplifiedpicpay.user.domain.model.UserType;
 import br.com.simplifiedpicpay.user.dto.request.UserRequestDto;
 import br.com.simplifiedpicpay.user.dto.response.UserResponseDto;
+import br.com.simplifiedpicpay.user.exception.UserAlreadyExistsException;
 import br.com.simplifiedpicpay.user.exception.UserNotFoundException;
 import br.com.simplifiedpicpay.user.mapper.UserMapper;
 import br.com.simplifiedpicpay.user.repositories.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -27,13 +29,19 @@ public class UserService {
         }
     }
 
-    public User findUserById(Long id) throws Exception{
+    public User findUserById(Long id) throws UserNotFoundException {
         return this.repository.findUserById(id).orElseThrow(() -> new UserNotFoundException("User not found by id."));
     }
 
     public UserResponseDto createUser(UserRequestDto userDto) {
-        User newUser = this.repository.save(UserMapper.toEntity(userDto));
-        return UserMapper.toResponseDto(newUser);
+        Optional<User> userDb = this.repository.findUserByDocument(userDto.document());
+
+        if(userDb.isEmpty()) {
+            User newUser = this.repository.save(UserMapper.toEntity(userDto));
+            return UserMapper.toResponseDto(newUser);
+        } else {
+            throw new UserAlreadyExistsException("There is already a user registered for this document: " + userDto.document());
+        }
     }
 
     public List<UserResponseDto> getAllUsers() {
