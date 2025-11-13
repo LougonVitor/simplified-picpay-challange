@@ -4,6 +4,7 @@ import br.com.simplifiedpicpay.user.domain.model.User;
 import br.com.simplifiedpicpay.user.domain.model.UserType;
 import br.com.simplifiedpicpay.user.dto.request.UserRequestDto;
 import br.com.simplifiedpicpay.user.dto.response.UserResponseDto;
+import br.com.simplifiedpicpay.user.exception.UserNotFoundException;
 import br.com.simplifiedpicpay.user.mapper.UserMapper;
 import br.com.simplifiedpicpay.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class UserService {
     }
 
     public User findUserById(Long id) throws Exception{
-        return this.repository.findUserById(id).orElseThrow(() -> new Exception("User not found by id."));
+        return this.repository.findUserById(id).orElseThrow(() -> new UserNotFoundException("User not found by id."));
     }
 
     public UserResponseDto createUser(UserRequestDto userDto) {

@@ -1,6 +1,7 @@
 package br.com.simplifiedpicpay.advice;
 
 import br.com.simplifiedpicpay.common.dto.ExceptionResponseDto;
+import br.com.simplifiedpicpay.user.exception.UserNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,11 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity handleUserNotFoundException(UserNotFoundException exception) {
+        ExceptionResponseDto response = new ExceptionResponseDto("User not found", "404");
+        return ResponseEntity.badRequest().body(response);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
