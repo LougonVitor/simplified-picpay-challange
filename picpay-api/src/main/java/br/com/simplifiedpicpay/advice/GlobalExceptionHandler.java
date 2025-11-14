@@ -1,8 +1,10 @@
 package br.com.simplifiedpicpay.advice;
 
 import br.com.simplifiedpicpay.common.dto.ExceptionResponseDto;
+import br.com.simplifiedpicpay.user.exception.UserAlreadyExistsException;
 import br.com.simplifiedpicpay.user.exception.UserNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.coyote.Response;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +24,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity handleUserAlreadyExistsException(UserAlreadyExistsException exception) {
+        ExceptionResponseDto response = new ExceptionResponseDto(exception.getMessage(), "409");
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
 
-        // Coleta todos os erros de validação
+        // Collect all validation errors
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();

@@ -33,17 +33,6 @@ public class UserService {
         return this.repository.findUserById(id).orElseThrow(() -> new UserNotFoundException("User not found by id."));
     }
 
-    public UserResponseDto createUser(UserRequestDto userDto) {
-        Optional<User> userDb = this.repository.findUserByDocument(userDto.document());
-
-        if(userDb.isEmpty()) {
-            User newUser = this.repository.save(UserMapper.toEntity(userDto));
-            return UserMapper.toResponseDto(newUser);
-        } else {
-            throw new UserAlreadyExistsException("There is already a user registered for this document: " + userDto.document());
-        }
-    }
-
     public List<UserResponseDto> getAllUsers() {
         List<User> usersDb = this.repository.findAll();
         List<UserResponseDto> response = new ArrayList<>();
@@ -57,5 +46,32 @@ public class UserService {
 
     public void saveUser(User user) {
         this.repository.save(user);
+    }
+
+    public UserResponseDto createUser(UserRequestDto userDto) {
+        Optional<User> userDb = this.repository.findUserByDocumentOrEmail(userDto.document(), userDto.email());
+
+        if(userDb.isPresent()) {
+            String conflictErrorMessage = this.buildConflictMessage(userDto, userDb.get());
+            throw new UserAlreadyExistsException(conflictErrorMessage);
+        }
+
+        User newUser = this.repository.save(UserMapper.toEntity(userDto));
+        return UserMapper.toResponseDto(newUser);
+    }
+
+    private String buildConflictMessage(UserRequestDto request, User existingUser) {
+        boolean documentConflict = existingUser.getDocument().equals(request.document());
+        boolean emailConflict = existingUser.getEmail().equals(request.email());
+
+        if(documentConflict && emailConflict) {
+            return "There is already a user registered for this document: " + request.document() + " and this email: " + request.email();
+        } else if (documentConflict) {
+            return "There is already a user registered for this document: " + request.document();
+        } else if (emailConflict) {
+            return "There is already a user registered for this email: " + request.email();
+        }
+
+        return "There is already a user registered with conflicting data.";
     }
 }
