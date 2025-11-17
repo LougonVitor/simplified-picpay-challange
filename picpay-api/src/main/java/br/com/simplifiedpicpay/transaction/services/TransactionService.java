@@ -1,6 +1,7 @@
 package br.com.simplifiedpicpay.transaction.services;
 
 import br.com.simplifiedpicpay.notification.services.NotificationService;
+import br.com.simplifiedpicpay.transaction.application.ports.IAuthorizationPort;
 import br.com.simplifiedpicpay.transaction.domain.model.Transaction;
 import br.com.simplifiedpicpay.transaction.dto.request.TransactionRequestDto;
 import br.com.simplifiedpicpay.transaction.dto.response.TransactionResponseDto;
@@ -9,6 +10,7 @@ import br.com.simplifiedpicpay.transaction.repositories.TransactionRepository;
 import br.com.simplifiedpicpay.user.domain.model.User;
 import br.com.simplifiedpicpay.user.service.UserService;
 import jakarta.transaction.Transactional;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +30,10 @@ public class TransactionService {
     private TransactionRepository repository;
 
     @Autowired
-    private RestTemplate restTemplate;
+    private NotificationService notificationService;
 
     @Autowired
-    private NotificationService notificationService;
+    private IAuthorizationPort authorizationPort;
 
     public TransactionResponseDto createTransaction(TransactionRequestDto transactionDto) throws Exception{
         User sender = this.userService.findUserById(transactionDto.senderId());
@@ -39,7 +41,7 @@ public class TransactionService {
 
         this.userService.validateTransaction(sender, transactionDto.amount());
 
-        boolean isAuthorized = this.authorizeTransaction(sender, transactionDto.amount());
+        boolean isAuthorized = this.authorizationPort.isAuthorized(sender.getId(), transactionDto.amount());
         if(!isAuthorized) {
             throw new Exception("Transaction not authorized");
         }
@@ -61,15 +63,5 @@ public class TransactionService {
         this.notificationService.sendNotification(receiver.getEmail(), "Transaction realized");
 
         return TransactionMapper.toDto(newTransaction);
-    }
-
-    public boolean authorizeTransaction(User sender, BigDecimal value) {
-        ResponseEntity<Map> authorizationResponse = restTemplate.getForEntity("https://util.devi.tools/api/v2/authorize", Map.class);
-
-        //Not necessary
-        //String message = (String) authorizationResponse.getBody().get("status");
-        //return "success".equalsIgnoreCase(message);
-
-        return authorizationResponse.getStatusCode() == HttpStatus.OK;
     }
 }
