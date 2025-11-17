@@ -6,6 +6,7 @@ import br.com.simplifiedpicpay.transaction.dto.request.TransactionRequestDto;
 import br.com.simplifiedpicpay.transaction.repositories.TransactionRepository;
 import br.com.simplifiedpicpay.user.domain.model.User;
 import br.com.simplifiedpicpay.user.domain.model.UserType;
+import br.com.simplifiedpicpay.user.exception.UserNotFoundException;
 import br.com.simplifiedpicpay.user.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,15 +14,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -137,5 +135,46 @@ class TransactionServiceTest {
         });
 
         Assertions.assertEquals("Transaction not authorized", throwsException.getMessage());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when user not found")
+    void shouldThrowExceptionWhenUserNotFound() {
+        User sender = new User(
+                1L
+                , "Vítor"
+                , "Lougon"
+                , "17036492332"
+                , "vitor.lougon@gmail.com"
+                , "V!tor"
+                , new BigDecimal(100)
+                , UserType.COMMON
+        );
+
+        User receiver = new User(
+                2L
+                , "Diogo"
+                , "Lougon"
+                , "17456491332"
+                , "diogo.lougon@gmail.com"
+                , "D!ogo"
+                , new BigDecimal(100)
+                , UserType.COMMON
+        );
+
+        when(this.userService.findUserById(1L)).thenReturn(sender);
+        when(this.userService.findUserById(2L)).thenReturn(receiver);
+
+        Exception throwsException = Assertions.assertThrows(UserNotFoundException.class, () -> {
+            TransactionRequestDto request = new TransactionRequestDto(
+                    new BigDecimal(10)
+                    , 3L
+                    , 2L
+                    , LocalDateTime.now()
+            );
+            this.transactionService.createTransaction(request);
+        });
+
+        Assertions.assertEquals("User not found by id.", throwsException.getMessage());
     }
 }
