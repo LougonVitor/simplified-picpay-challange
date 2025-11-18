@@ -151,24 +151,13 @@ class TransactionServiceTest {
                 , UserType.COMMON
         );
 
-        User receiver = new User(
-                2L
-                , "Diogo"
-                , "Lougon"
-                , "17456491332"
-                , "diogo.lougon@gmail.com"
-                , "D!ogo"
-                , new BigDecimal(100)
-                , UserType.COMMON
-        );
-
         when(this.userService.findUserById(1L)).thenReturn(sender);
-        when(this.userService.findUserById(2L)).thenReturn(receiver);
+        when(this.userService.findUserById(2L)).thenThrow(new UserNotFoundException("User not found by id."));
 
         Exception throwsException = Assertions.assertThrows(UserNotFoundException.class, () -> {
             TransactionRequestDto request = new TransactionRequestDto(
                     new BigDecimal(10)
-                    , 3L
+                    , 1L
                     , 2L
                     , LocalDateTime.now()
             );
