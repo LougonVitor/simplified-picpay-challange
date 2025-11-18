@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: simplified_picpay_db
+
+    # Environment variables to setup Postgres DB
+    environment:
+      POSTGRES_USER: ${POSTGRE_USERNAME}     # Database user
+      POSTGRES_PASSWORD: ${POSTGRE_PASSWORD} # User password
+      POSTGRES_DB: picpay_db              # Database name
+
+    # Ports Mapping: HOST:CONTAINER.
+    # You can access it outside the container on localhost:5432
+    ports:
+      - "5435:5432"
+    # Volume to persist the data of the database (crucial!)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+# Definition of volume to persist the data
+volumes:
+  postgres_data:
