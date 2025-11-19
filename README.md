@@ -4,7 +4,7 @@ A backend project developed as a **challenge proposed by PicPay**, with several 
 In this project, I implemented **JUnit tests**, **validations**, **exception handling**, **DDD with bounded contexts**, and a **layered architecture**.
 
 This is a **Java and Spring Boot API** designed to manage **user CRUD operations** and **financial transactions** between users.  
-It also includes **JWT authentication**, **Docker** containerization, **PostgreSQL** as the database, and **CI/CD integration** for continuous deployment. 🚀
+It also includes **Docker** containerization, **H2Database** as the cache database, and **CI/CD integration** for continuous deployment. 🚀
 
 ___It’s worth mentioning that this is a backend-only project built entirely with Java and Spring Boot.___
 
@@ -14,10 +14,10 @@ ___It’s worth mentioning that this is a backend-only project built entirely wi
 
 - **Java** ☕
 - **Spring Boot** 🌱
-- **PostgreSQL** 🐘
+- **H2 Database** 💾
 - **Docker** 🐋
 - **JUnit** 🧪
-- **JWT Authentication** 🔐
+- **Mockito** 🎭
 - **DDD (Domain-Driven Design)** 🏛️
 - **CI/CD** ⚙️
 
@@ -52,20 +52,24 @@ picpay-challenge-api/
 
 ## ⚙️ Configuration
 
-Configure your `application.properties` file to connect to PostgreSQL:
+Configure your `application.properties` file to connect to PostgreSQL if you're using docker compose file:
 
 ```properties
 spring.datasource.url=${POSTGRE_DATABASE_URL}
 spring.datasource.username=${POSTGRE_USERNAME_ADMIN}
 spring.datasource.password=${POSTGRE_PASSWORD_ADMIN}
+spring.jpa.hibernate.ddl-auto=update
 ```
 
-Or use a local configuration, for example:
+Or use the standard configuration for H2Database, like this:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/picpay
-spring.datasource.username=your-username
-spring.datasource.password=your-password
+spring-datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.h2.console.enabled=true
 ```
 
 ---
@@ -84,18 +88,27 @@ docker-compose up --build
 
 **POST /transaction**
 
-**Headers:**
-```
-Content-Type: application/json
-Authorization: Bearer <your_jwt_token>
-```
-
 **Body:**
 ```json
 {
   "amount": 100.0,
   "senderId": 4,
   "receiverId": 15
+}
+```
+
+**POST /users**
+
+**Body:**
+```json
+{
+    "firstName": "Vítor",
+    "lastName": "Lougon",
+    "document": "99911199922",
+    "email": "vitor.lougon@gmail.com",
+    "password": "T3est!@#",
+    "balance": 1000,
+    "userType": "COMMON"
 }
 ```
 
